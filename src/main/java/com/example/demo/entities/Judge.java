@@ -22,6 +22,7 @@ public class Judge {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   private String gender;
+  private String fullName;
   @OneToMany(mappedBy = "judge")
   @JsonIgnore
   private List<File> files;

@@ -21,6 +21,7 @@ public class Court {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
+  private String Name;
   private String city;
   @OneToMany(mappedBy = "court")
   @JsonIgnore

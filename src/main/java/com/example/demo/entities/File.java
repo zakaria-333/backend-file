@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Temporal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class File {
   private String fileNumber;
   private String judgment;
   private double fees;
+  @Temporal(jakarta.persistence.TemporalType.DATE)
   private Date experienceDate;
   private String reference;
   private boolean depositExpertReport;
@@ -33,16 +35,15 @@ public class File {
   private boolean feeCollection;
   private String hour;
   @ManyToOne
+  private Topic topic;
+  @ManyToOne
   private ActionType actionType;
   @ManyToOne
   private Court court;
   @ManyToOne
   private Judge judge;
-  @OneToMany(mappedBy = "file")
+  @ManyToMany
   private List<Party> parties;
   @ManyToMany
   private List<Lawyer> lawyers;
-  @ManyToOne
-  private Topic topic;
-
 }

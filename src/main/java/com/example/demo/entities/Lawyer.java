@@ -1,7 +1,7 @@
 package com.example.demo.entities;
 
 
-import java.util.List;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -26,5 +26,5 @@ public class Lawyer {
   private String authority;
   @ManyToMany(mappedBy = "lawyers")
   @JsonIgnore
-  private List<File> files;
+  private List<File> files = new ArrayList<>();
 }
