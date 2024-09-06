@@ -12,9 +12,6 @@ import com.example.demo.repositories.FileRepository;
 import com.example.demo.services.FileService;
 
 import java.util.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/api/file")
@@ -31,9 +28,29 @@ public class FileController {
     return fileRepository.findAll();
   }
 
+  @GetMapping("/parties/{id}")
+  public ResponseEntity<List<Party>> getPartiesByFileId(@PathVariable int id) {
+    Optional<File> file = fileRepository.findById(id);
+    if (file.isPresent()) {
+      return ResponseEntity.ok(file.get().getParties());
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  @GetMapping("/lawyers/{id}")
+  public ResponseEntity<List<Lawyer>> getLawyersByFileId(@PathVariable int id) {
+    Optional<File> file = fileRepository.findById(id);
+    if (file.isPresent()) {
+      return ResponseEntity.ok(file.get().getLawyers());
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
   @GetMapping("/{id}")
   public Optional<File> getById(@PathVariable int id) {
-      return fileRepository.findById(id);
+    return fileRepository.findById(id);
   }
 
   @DeleteMapping("/delete/{fileId}")
