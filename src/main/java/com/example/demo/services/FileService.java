@@ -30,46 +30,58 @@ public class FileService {
   public File createFileWithAssociations(File file) {
 
     List<Party> savedParties = new ArrayList<>();
-    for (Party party : file.getParties()) {
-      Party existingParty = partyRepository.findByFullNameAndFeature(party.getFullName(), party.getFeature());
-      if (existingParty != null) {
-        savedParties.add(existingParty);
-      } else {
-        Party savedParty = partyRepository.save(party);
-        savedParties.add(savedParty);
+    if (file.getParties() != null) {
+      for (Party party : file.getParties()) {
+        Party existingParty = partyRepository.findByFullNameAndFeature(party.getFullName(), party.getFeature());
+        if (existingParty != null) {
+          savedParties.add(existingParty);
+        } else {
+          Party savedParty = partyRepository.save(party);
+          savedParties.add(savedParty);
+        }
       }
+    } else {
+      file.setParties(null);
     }
 
     List<Lawyer> savedLawyers = new ArrayList<>();
-    for (Lawyer lawyer : file.getLawyers()) {
-      Lawyer existingLawyer = lawyerRepository.findByFullName(lawyer.getFullName());
-      if (existingLawyer != null) {
-        savedLawyers.add(existingLawyer);
-      } else {
-        Lawyer savedLawyer = lawyerRepository.save(lawyer);
-        savedLawyers.add(savedLawyer);
+    if (file.getLawyers() != null) {
+      for (Lawyer lawyer : file.getLawyers()) {
+        Lawyer existingLawyer = lawyerRepository.findByFullName(lawyer.getFullName());
+        if (existingLawyer != null) {
+          savedLawyers.add(existingLawyer);
+        } else {
+          Lawyer savedLawyer = lawyerRepository.save(lawyer);
+          savedLawyers.add(savedLawyer);
+        }
       }
+    } else {
+      file.setLawyers(null);
     }
 
-    file.setParties(savedParties);
-    file.setLawyers(savedLawyers);
+    file.setParties(savedParties.isEmpty() ? null : savedParties);
+    file.setLawyers(savedLawyers.isEmpty() ? null : savedLawyers);
 
     File savedFile = fileRepository.save(file);
 
-    for (Party party : savedParties) {
-      if (party.getFiles() == null) {
-        party.setFiles(new ArrayList<>());
+    if (savedParties != null) {
+      for (Party party : savedParties) {
+        if (party.getFiles() == null) {
+          party.setFiles(new ArrayList<>());
+        }
+        party.getFiles().add(savedFile);
+        partyRepository.save(party);
       }
-      party.getFiles().add(savedFile);
-      partyRepository.save(party);
     }
 
-    for (Lawyer lawyer : savedLawyers) {
-      if (lawyer.getFiles() == null) {
-        lawyer.setFiles(new ArrayList<>());
+    if (savedLawyers != null) {
+      for (Lawyer lawyer : savedLawyers) {
+        if (lawyer.getFiles() == null) {
+          lawyer.setFiles(new ArrayList<>());
+        }
+        lawyer.getFiles().add(savedFile);
+        lawyerRepository.save(lawyer);
       }
-      lawyer.getFiles().add(savedFile);
-      lawyerRepository.save(lawyer);
     }
 
     return savedFile;
@@ -168,7 +180,7 @@ public class FileService {
         .orElseThrow(() -> new IllegalArgumentException("File with id " + fileId + " not found"));
     List<Party> parties = file.getParties();
     for (Party party : parties) {
-      party.getFiles().remove(file); 
+      party.getFiles().remove(file);
     }
     List<Lawyer> lawyers = file.getLawyers();
     for (Lawyer lawyer : lawyers) {

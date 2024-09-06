@@ -12,6 +12,9 @@ import com.example.demo.repositories.FileRepository;
 import com.example.demo.services.FileService;
 
 import java.util.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/file")
@@ -26,6 +29,11 @@ public class FileController {
   @GetMapping("/all")
   public List<File> findAll() {
     return fileRepository.findAll();
+  }
+
+  @GetMapping("/{id}")
+  public Optional<File> getById(@PathVariable int id) {
+      return fileRepository.findById(id);
   }
 
   @DeleteMapping("/delete/{fileId}")
